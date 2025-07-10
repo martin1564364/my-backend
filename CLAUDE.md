@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a FastAPI-based personal backend API designed for deployment on AWS App Runner. The application provides a simple, authenticated API with health checking capabilities.
+This is a FastAPI-based personal backend API designed for deployment on AWS App Runner. The application provides a simple, authenticated API with health checking capabilities. The project is a git repository connected to GitHub with automatic deployment configured.
 
 ## Architecture
 
@@ -52,6 +52,31 @@ docker build -t my-backend .
 docker run -p 8000:8000 my-backend
 ```
 
+### Git Commands
+```bash
+# Check repository status
+git status
+
+# View current changes
+git diff
+
+# Add files to staging
+git add .
+git add specific-file.py
+
+# Commit changes
+git commit -m "Description of changes"
+
+# Push to GitHub (triggers auto-deployment)
+git push origin main
+
+# View commit history
+git log --oneline
+
+# Check remote repository
+git remote -v
+```
+
 ## Configuration
 
 Environment variables are managed through `.env` file and loaded via python-dotenv:
@@ -76,9 +101,22 @@ Core dependencies (requirements.txt):
 ## Deployment
 
 The application is configured for AWS App Runner deployment with:
-- Dockerfile for containerization
-- apprunner.yaml for service configuration
+- apprunner.yaml for service configuration (runtime: python311)
 - Automatic deployment from GitHub main branch
 - Environment variables configured in App Runner service
+- GitHub connection for source code access
+
+### Deployment Workflow
+1. **Make changes** to code locally
+2. **Test locally** using development server
+3. **Commit changes** to git: `git add . && git commit -m "Description"`
+4. **Push to GitHub**: `git push origin main`
+5. **Auto-deployment triggers** in App Runner (monitor via AWS Console)
+
+### Important Notes
+- Changes to apprunner.yaml require commit/push to take effect
+- App Runner pulls from GitHub repository, not local files
+- Auto-deployment is enabled for main branch
+- Environment variables (like API_KEY) should be set via AWS Console for security
 
 See deployment.md for detailed deployment instructions including AWS CLI commands and GitHub setup.
