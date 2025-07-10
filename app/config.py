@@ -10,8 +10,7 @@ class Settings:
     PORT: int = int(os.getenv("PORT", "8000"))
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
     
-    @classmethod
-    def validate_api_key(cls, api_key: Optional[str]) -> bool:
-        return api_key is not None and api_key == cls.API_KEY
+    def validate_api_key(self, api_key: Optional[str]) -> bool:
+        return api_key is not None and api_key == self.API_KEY
 
 settings = Settings()
