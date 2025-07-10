@@ -1,0 +1,19 @@
+{
+  "ServiceName": "my-backend-api",
+  "SourceConfiguration": {
+    "AuthenticationConfiguration": {
+      "ConnectionArn": "arn:aws:apprunner:eu-central-1:963494710244:connection/Personal_GitHub/3b20c86207024abda1d1e6eda9135725"
+    },
+    "CodeRepository": {
+      "RepositoryUrl": "https://github.com/martin1564364/my-backend",
+      "SourceCodeVersion": {
+        "Type": "BRANCH",
+        "Value": "main"
+      },
+      "CodeConfiguration": {
+        "ConfigurationSource": "REPOSITORY"
+      }
+    },
+    "AutoDeploymentsEnabled": true
+  }
+}

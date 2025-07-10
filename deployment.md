@@ -130,37 +130,18 @@ aws configure
 
 ### 2. Create App Runner Service
 
-#### Update apprunner.yaml
-Before deployment, update the API key in `apprunner.yaml`:
+#### Update apprunner-config.json
+Before deployment, update the repository URL in `apprunner-config.json`:
 ```powershell
-notepad apprunner.yaml
-# Replace 'your-secure-api-key-here' with your actual API key
+notepad apprunner-config.json
+# Replace 'YOUR_USERNAME' with your GitHub username
 ```
 
 #### Deploy using AWS CLI
 ```powershell
-# Create the service (replace YOUR_USERNAME with your GitHub username)
-aws apprunner create-service `
-  --service-name "my-backend-api" `
-  --source-configuration '{
-    "ImageRepository": {
-      "ImageIdentifier": "public.ecr.aws/docker/library/python:3.11-slim",
-      "ImageConfiguration": {
-        "Port": "8000"
-      }
-    },
-    "AutoDeploymentsEnabled": true,
-    "CodeRepository": {
-      "RepositoryUrl": "https://github.com/YOUR_USERNAME/my-backend",
-      "SourceCodeVersion": {
-        "Type": "BRANCH",
-        "Value": "main"
-      },
-      "CodeConfiguration": {
-        "ConfigurationSource": "CONFIGURATION_FILE"
-      }
-    }
-  }'
+# Create the service using the configuration file
+# The connection ARN is now included in the JSON configuration
+aws apprunner create-service --cli-input-json file://apprunner-config.json
 ```
 
 ### 3. Monitor Deployment
@@ -212,6 +193,16 @@ git push origin main
 ```
 
 ### Environment Management
+
+#### Setting API Key via AWS Console (Recommended)
+1. Go to AWS App Runner console
+2. Select your service
+3. Go to "Configuration" tab
+4. Click "Edit" in the "Environment variables" section
+5. Add/Update: `API_KEY` with your secure API key
+6. Save changes
+
+#### Alternative: Update via AWS CLI
 ```powershell
 # To update environment variables in App Runner:
 aws apprunner update-service `
@@ -258,6 +249,11 @@ Check App Runner logs:
 aws apprunner describe-service --service-arn "your-service-arn"
 ```
 
+#### 5. Runtime Version Not Supported
+If you get "runtime version is not supported" error:
+- Ensure `apprunner.yaml` uses supported runtime: `python311` or `python3`
+- Check [AWS App Runner Python runtime releases](https://docs.aws.amazon.com/apprunner/latest/dg/service-source-code-python-releases.html) for current versions
+
 ### Getting Help
 
 - AWS App Runner Documentation: https://docs.aws.amazon.com/apprunner/
@@ -267,10 +263,13 @@ aws apprunner describe-service --service-arn "your-service-arn"
 ## Security Best Practices
 
 1. **Never commit your .env file** - it contains sensitive information
-2. **Use strong API keys** - generate random, complex keys
-3. **Regularly rotate API keys** - update them periodically
-4. **Monitor access logs** - check who's accessing your API
-5. **Use HTTPS only** - App Runner provides SSL certificates automatically
+2. **Never hardcode API keys in apprunner.yaml** - use AWS Console to set environment variables instead
+3. **Use strong API keys** - generate random, complex keys (32+ characters)
+4. **Set API keys via AWS Console** - keep secrets out of source code
+5. **Regularly rotate API keys** - update them periodically through AWS Console
+6. **Monitor access logs** - check who's accessing your API
+7. **Use HTTPS only** - App Runner provides SSL certificates automatically
+8. **Keep placeholder values in config files** - replace secrets only in deployment environment
 
 ## Cost Optimization
 
